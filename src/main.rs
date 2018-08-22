@@ -19,7 +19,11 @@ enum Node {
 }
 
 fn main() {
-    println!("{:?}", compress_lz77("aaaabrtyab"));
+    let text = "aaaabrtyab";
+    let compressed = compress_lz77(text);
+    println!("{:?}", compressed);
+    let decompressed = decompress_lz77(&compressed);
+    println!("{:?}", decompressed);
 }
 
 
@@ -107,4 +111,29 @@ fn _get_longest_repetition(original_text: &str, occurrences: Vec<usize>, current
 
 fn _skip_chars(e: &mut Enumerate<Chars>, n: &usize) {
     for _ in 0..*n { e.next(); }
+}
+
+
+// decompresses a borrow of a vector of Nodes to an owned String
+fn decompress_lz77(nodes: &Vec<Node>) -> String {
+    let mut result = String::new();
+    let mut index = 0;
+    for node in nodes {
+        println!("{}", &result);
+        match *node {
+            Node::Single {character} => {
+                result.push(character);
+                index += 1;
+            },
+            Node::Repetition {offset, length} => {
+                let start_index = index - offset;
+                let end_index = start_index + length;
+                let piece_to_append = &result.clone()[start_index..end_index];
+
+                result.push_str(piece_to_append);
+                index += length;
+            },
+        }
+    }
+    result
 }
