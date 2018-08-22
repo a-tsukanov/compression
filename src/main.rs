@@ -1,48 +1,57 @@
-use std::collections::HashMap;
+// Module containing functions to compress and decompress text using LZ77 algorithm
 
+
+use std::collections::HashMap;
+use std::iter::Enumerate;
+use std::str::Chars;
+
+
+// Single element of compressed collection
 #[derive(Debug)]
 enum Node {
-    Repetition {
-        character: char,
-        offset: usize,
-        length: usize,
+    Repetition {          // A piece of text already seen before.
+        offset: usize,    // How far left is the piece of text.
+        length: usize,    // How long it is.
     },
-    Single {
+    Single {              // Just one character
         character: char,
     },
 }
 
 fn main() {
-    println!("{:?}", text_to_nodes("aaaabrtyab"));
+    println!("{:?}", compress_lz77("aaaabrtyab"));
 }
 
-fn text_to_nodes(text: &str) -> Vec<Node> {
+
+/*
+text: string slice to be compressed
+returns: owned vector of nodes
+*/
+fn compress_lz77(text: &str) -> Vec<Node> {
     let mut result = Vec::new();
-    let mut enumerator = text.chars().enumerate();
+    let mut enumerator: Enumerate<Chars> = text.chars().enumerate();
+
     while let Some((index, character)) = enumerator.next() {
         let seen = &text[..index];
-        let occurrences = get_occurrences(&character, seen);
+        let occurrences = _get_occurrences(&character, seen);
+
         if occurrences.is_empty() {
             result.push(Node::Single { character });
         }
+
         else {
-            let position_to_length: HashMap<_, _> = get_substr_mappings(text, occurrences, index);
-            let mut map_vec: Vec<(&usize, &usize)> = position_to_length.iter().collect();
-            map_vec.sort_by(|a, b| b.1.cmp(a.1));
-            let (longest_position, longest_length) = map_vec[0];
-            println!("{:?}", (longest_position, longest_length));
-            if *longest_length == 1 {
+            let (longest_position, longest_length) = _get_longest_repetition(text, occurrences, index);
+
+            if longest_length == 1 {
+                // we don't want a Repetition of length 1, it is inefficient
                 result.push(Node::Single { character });
             }
             else {
                 result.push(Node::Repetition {
-                    character,
-                    offset: index - *longest_position,
-                    length: *longest_length,
+                    offset: index - longest_position,
+                    length: longest_length,
                 });
-                for _ in 0..(*longest_length - 1) {
-                    enumerator.next();
-                }
+            _skip_chars(&mut enumerator, &(longest_length - 1))
             }
         }
 
@@ -50,7 +59,9 @@ fn text_to_nodes(text: &str) -> Vec<Node> {
     result
 }
 
-fn get_occurrences(character: &char, seen: &str) -> Vec<usize> {
+
+// returns a vector of character indices in the "seen" string slice
+fn _get_occurrences(character: &char, seen: &str) -> Vec<usize> {
     seen.chars()
         .enumerate()
         .filter(|(_, c)| c == character)
@@ -58,25 +69,42 @@ fn get_occurrences(character: &char, seen: &str) -> Vec<usize> {
         .collect()
 }
 
-fn get_substr_mappings(original_text: &str, occurrences: Vec<usize>, current_index: usize) -> HashMap<usize, usize> {
-    let mut position_to_length = HashMap::new();
-    let seen = &original_text[..current_index];
 
-    for position in occurrences {
-        let mut length = 0;
-        loop {
-            let current_from_seen = seen.chars().nth(position + length);
-            let current_from_original = original_text.chars().nth(current_index + length);
-            match (current_from_seen, current_from_original) {
-                (Some(c), Some(c2)) if c == c2 => {
-                    length += 1;
-                },
-                _ => {
-                    position_to_length.insert(position, length);
-                    break;
-                },
+// given a HashMap (position => length) returns a tuple of (position, length) with the biggest length
+fn _get_longest_repetition(original_text: &str, occurrences: Vec<usize>, current_index: usize) -> (usize, usize) {
+
+    // returns a HashMap (position => length) with lengths of the found repetitions
+    fn _get_substr_mappings(original_text: &str, occurrences: Vec<usize>, current_index: usize) -> HashMap<usize, usize> {
+        let mut position_to_length = HashMap::new();
+        let seen = &original_text[..current_index];
+
+        for position in occurrences {
+            let mut length = 0;
+            loop {
+                let current_from_seen = seen.chars().nth(position + length);
+                let current_from_original = original_text.chars().nth(current_index + length);
+                match (current_from_seen, current_from_original) {
+                    (Some(c), Some(c2)) if c == c2 => {
+                        length += 1;
+                    },
+                    _ => {
+                        position_to_length.insert(position, length);
+                        break;
+                    },
+                };
             };
-        };
+        }
+        position_to_length
     }
-    position_to_length
+
+    let position_to_length = _get_substr_mappings(&original_text, occurrences, current_index);
+    let mut map_vec: Vec<(&usize, &usize)> = position_to_length.iter().collect();
+    map_vec.sort_by(|a, b| b.1.cmp(a.1));  // sort by .1 field (length) descending
+    let (position, length) = map_vec[0];
+    (position.clone(), length.clone())
+}
+
+
+fn _skip_chars(e: &mut Enumerate<Chars>, n: &usize) {
+    for _ in 0..*n { e.next(); }
 }
