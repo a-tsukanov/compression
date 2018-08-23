@@ -154,21 +154,19 @@ fn decompress_lz77(nodes: &Vec<Node>) -> String {
     let mut result = String::new();
     let mut index = 0;
     for node in nodes {
-        match *node {
+        let piece_to_append = match *node {
             Node::Single {character} => {
-                result.push(character);
                 index += 1;
+                character.to_string()
             },
             Node::Repetition {offset, length} => {
                 let start_index = index - offset;
                 let end_index = start_index + length;
-                let clone = result.clone();
-                let piece_to_append = _get_utf8_slice(&clone, start_index, end_index);
-
-                result.push_str(piece_to_append);
                 index += length;
+                _get_utf8_slice(&result, start_index, end_index).to_string()
             },
-        }
+        };
+        result.push_str(&piece_to_append);
     }
     result
 }
