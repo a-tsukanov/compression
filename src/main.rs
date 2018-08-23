@@ -32,7 +32,7 @@ impl fmt::Display for Node {
 
 
 fn main() {
-    let text = "Привет как дела что делаешь🚀🌍🌎🌍🌎🔧🔧🚀 😎😎 Hi` मस्ते मस 😎😎😎";
+    let text = "как дела что делаешь🚀🌍🌎🌍🌎🔧🔧🚀 😎😎 Hi` मस्ते मस 😎😎😎 aoahhzaoahhzaoahhz hhzaoahhz hhzaoahhz aoahhzaoahhzaoahhz hhzaoahhz hhzaoahhz \t  मस्ते मस 😎😎";
 
     let compressed = compress_lz77_to_vec(text);
     println!("{}", vec_to_str(&compressed));
@@ -49,10 +49,10 @@ fn _get_utf8_slice(string: &str, start: usize, end: usize) -> &str {
         string.char_indices().map(|(i, _)| i).nth(idx).unwrap()
     }
     let start_byteindex = _get_idx(string, start);
-    let end_byteindex = if end == string.chars().count() {string.len()} else { _get_idx(string, end)};
+    let end_byteindex
+        = if end == string.chars().count() {string.len()} else { _get_idx(string, end)};
 
     &string[start_byteindex..end_byteindex]
-
 }
 
 
@@ -73,7 +73,8 @@ fn compress_lz77_to_vec(text: &str) -> Vec<Node> {
         }
 
         else {
-            let (longest_position, longest_length) = _get_longest_repetition(text, occurrences, index);
+            let (longest_position, longest_length)
+                = _get_longest_repetition(text, occurrences, index);
 
             if longest_length == 1 {
                 // we don't want a Repetition of length 1, it is inefficient
