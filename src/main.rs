@@ -4,6 +4,8 @@
 use std::collections::HashMap;
 use std::iter::Enumerate;
 use std::str::Chars;
+use std::fmt;
+use std::vec::Vec;
 
 
 // Single element of compressed collection
@@ -18,12 +20,32 @@ enum Node {
     },
 }
 
+
+impl fmt::Display for Node {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Node::Single {character} => write!(f, "{}", character),
+            Node::Repetition {offset, length} => write!(f, "[<-{}|{}]", offset, length),
+        }
+    }
+}
+
+
 fn main() {
-    let text = "aaaabrtyab";
-    let compressed = compress_lz77(text);
-    println!("{:?}", compressed);
+    let text = "abcabcd";
+
+    let compressed = compress_lz77_to_vec(text);
+    println!("{}", vec_to_str(&compressed));
+
     let decompressed = decompress_lz77(&compressed);
-    println!("{:?}", decompressed);
+    println!("{}", decompressed);
+
+    assert_eq!(text, &decompressed);
+}
+
+
+fn vec_to_str(nodes: &Vec<Node>) -> String {
+    nodes.iter().map(|item| format!("{}", item)).collect()
 }
 
 
@@ -31,7 +53,7 @@ fn main() {
 text: string slice to be compressed
 returns: owned vector of nodes
 */
-fn compress_lz77(text: &str) -> Vec<Node> {
+fn compress_lz77_to_vec(text: &str) -> Vec<Node> {
     let mut result = Vec::new();
     let mut enumerator: Enumerate<Chars> = text.chars().enumerate();
 
@@ -119,7 +141,6 @@ fn decompress_lz77(nodes: &Vec<Node>) -> String {
     let mut result = String::new();
     let mut index = 0;
     for node in nodes {
-        println!("{}", &result);
         match *node {
             Node::Single {character} => {
                 result.push(character);
