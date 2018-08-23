@@ -1,5 +1,5 @@
 // Module containing functions to compress and decompress text using LZ77 algorithm
-
+extern crate unicode_segmentation;
 
 use std::collections::HashMap;
 use std::iter::Enumerate;
@@ -32,7 +32,7 @@ impl fmt::Display for Node {
 
 
 fn main() {
-    let text = "abcabcd";
+    let text = "Привет как дела что делаешь🚀🌍🌎🌍🌎🔧🔧🚀 😎😎 Hi` मस्ते मस 😎😎😎";
 
     let compressed = compress_lz77_to_vec(text);
     println!("{}", vec_to_str(&compressed));
@@ -44,8 +44,15 @@ fn main() {
 }
 
 
-fn vec_to_str(nodes: &Vec<Node>) -> String {
-    nodes.iter().map(|item| format!("{}", item)).collect()
+fn _get_utf8_slice(string: &str, start: usize, end: usize) -> &str {
+    fn _get_idx(string: &str, idx: usize) -> usize {
+        string.char_indices().map(|(i, _)| i).nth(idx).unwrap()
+    }
+    let start_byteindex = _get_idx(string, start);
+    let end_byteindex = if end == string.chars().count() {string.len()} else { _get_idx(string, end)};
+
+    &string[start_byteindex..end_byteindex]
+
 }
 
 
@@ -58,7 +65,7 @@ fn compress_lz77_to_vec(text: &str) -> Vec<Node> {
     let mut enumerator: Enumerate<Chars> = text.chars().enumerate();
 
     while let Some((index, character)) = enumerator.next() {
-        let seen = &text[..index];
+        let seen = _get_utf8_slice(text, 0, index);
         let occurrences = _get_occurrences(&character, seen);
 
         if occurrences.is_empty() {
@@ -102,7 +109,7 @@ fn _get_longest_repetition(original_text: &str, occurrences: Vec<usize>, current
     // returns a HashMap (position => length) with lengths of the found repetitions
     fn _get_substr_mappings(original_text: &str, occurrences: Vec<usize>, current_index: usize) -> HashMap<usize, usize> {
         let mut position_to_length = HashMap::new();
-        let seen = &original_text[..current_index];
+        let seen = _get_utf8_slice(original_text, 0, current_index);
 
         for position in occurrences {
             let mut length = 0;
@@ -136,6 +143,12 @@ fn _skip_chars(e: &mut Enumerate<Chars>, n: &usize) {
 }
 
 
+
+fn vec_to_str(nodes: &Vec<Node>) -> String {
+    nodes.iter().map(|item| format!("{}", item)).collect()
+}
+
+
 // decompresses a borrow of a vector of Nodes to an owned String
 fn decompress_lz77(nodes: &Vec<Node>) -> String {
     let mut result = String::new();
@@ -149,7 +162,8 @@ fn decompress_lz77(nodes: &Vec<Node>) -> String {
             Node::Repetition {offset, length} => {
                 let start_index = index - offset;
                 let end_index = start_index + length;
-                let piece_to_append = &result.clone()[start_index..end_index];
+                let clone = result.clone();
+                let piece_to_append = _get_utf8_slice(&clone, start_index, end_index);
 
                 result.push_str(piece_to_append);
                 index += length;
