@@ -1,5 +1,4 @@
 // Module containing functions to compress and decompress text using LZ77 algorithm
-extern crate unicode_segmentation;
 
 use std::collections::HashMap;
 use std::iter::Enumerate;
