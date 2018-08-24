@@ -1,0 +1,1 @@
+from .lz77_rust import get_results

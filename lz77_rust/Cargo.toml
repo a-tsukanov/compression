@@ -1,0 +1,13 @@
+[package]
+name = "lz77_rust"
+version = "0.1.0"
+authors = ["Sasha <sasha.ts91@gmail.com>"]
+
+[lib]
+name = "lz77_rust"
+crate-type = ["cdylib"]
+
+[dependencies.pyo3]
+version = "0.4.0"
+features = ["extension-module"]
+

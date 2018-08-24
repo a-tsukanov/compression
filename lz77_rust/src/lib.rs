@@ -1,5 +1,8 @@
 // Module containing functions to compress and decompress text using LZ77 algorithm
 
+
+#![feature(specialization)]
+
 use std::collections::HashMap;
 use std::iter::Enumerate;
 use std::str::Chars;
@@ -7,6 +10,12 @@ use std::fmt;
 use std::vec::Vec;
 use std::mem::size_of;
 use std::u8;
+
+
+#[macro_use]
+extern crate pyo3;
+
+use pyo3::prelude::*;
 
 
 // Single element of compressed collection
@@ -32,20 +41,20 @@ impl fmt::Display for Node {
 }
 
 
-fn main() {
-    let text = "
-Нет, равенство неверно, всегда будет погрешность, можно лишь сказать, что если мы хотим наилучшим образом приблизить функцию в точке линейной функцией, то коэффициент при х у линейной функции будет равен значению производной
-Ну или можно сказать так, вот мы захотели приблизить нашу функцию у = х² линейной функцией в какой-то точке, перенесли в эту точку начало координат и очень сильно увеличили масштаб, тогда прямая с коэффициентом, равным производной в данной точке, будет очень близка к функции, причем с любым другим коэффициентом такого не будет.";
+//fn main() {
+//    let text = "
+//Нет, равенство неверно, всегда будет погрешность, можно лишь сказать, что если мы хотим наилучшим образом приблизить функцию в точке линейной функцией, то коэффициент при х у линейной функции будет равен значению производной
+//Ну или можно сказать так, вот мы захотели приблизить нашу функцию у = х² линейной функцией в какой-то точке, перенесли в эту точку начало координат и очень сильно увеличили масштаб, тогда прямая с коэффициентом, равным производной в данной точке, будет очень близка к функции, причем с любым другим коэффициентом такого не будет.";
+//
+//    let ((compressed, decompressed), (size_before, size_after)) = get_results(text);
+//    println!("{}", compressed);
+//    println!("{}", decompressed);
+//    println!("{} -> {}", size_before, size_after);
+//
+//    assert_eq!(text, &decompressed);
+//}
 
-    let ((compressed, decompressed), (size_before, size_after)) = get_results(text);
-    println!("{}", compressed);
-    println!("{}", decompressed);
-    println!("{} -> {}", size_before, size_after);
-
-    assert_eq!(text, &decompressed);
-}
-
-
+#[pyfunction]
 fn get_results(text: &str) -> ((String, String), (usize, usize)) {
     let compressed_nodes = compress_lz77_to_vec(text);
     let compressed_str = vec_to_str(&compressed_nodes);
@@ -188,4 +197,12 @@ fn decompress_lz77(nodes: &Vec<Node>) -> String {
         result.push_str(&piece_to_append);
     }
     result
+}
+
+
+#[pymodinit]
+fn lz77_rust(py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_function(wrap_function!(get_results))?;
+
+    Ok(())
 }
