@@ -33,7 +33,9 @@ impl fmt::Display for Node {
 
 
 fn main() {
-    let text = "qwertyuiop qwertyuiop qwertyuiop ";
+    let text = "
+Нет, равенство неверно, всегда будет погрешность, можно лишь сказать, что если мы хотим наилучшим образом приблизить функцию в точке линейной функцией, то коэффициент при х у линейной функции будет равен значению производной
+Ну или можно сказать так, вот мы захотели приблизить нашу функцию у = х² линейной функцией в какой-то точке, перенесли в эту точку начало координат и очень сильно увеличили масштаб, тогда прямая с коэффициентом, равным производной в данной точке, будет очень близка к функции, причем с любым другим коэффициентом такого не будет.";
 
     let ((compressed, decompressed), (size_before, size_after)) = get_results(text);
     println!("{}", compressed);
@@ -79,8 +81,8 @@ fn compress_lz77_to_vec(text: &str) -> Vec<Node> {
     let mut enumerator: Enumerate<Chars> = text.chars().enumerate();
 
     while let Some((index, character)) = enumerator.next() {
-        let start = if index < u8::MAX as usize {0} else {index - u8::MAX as usize};
-        let seen = _get_utf8_slice(text, start, index);
+        let window_offset = if index < u8::MAX as usize {0} else {index - u8::MAX as usize};
+        let seen = _get_utf8_slice(text, window_offset, index);
         let occurrences = _get_occurrences(&character, seen);
 
         if occurrences.is_empty() {
@@ -88,6 +90,7 @@ fn compress_lz77_to_vec(text: &str) -> Vec<Node> {
         }
 
         else {
+            let occurrences: Vec<usize> = occurrences.iter().map(|i| i + window_offset).collect();
             let (longest_position, longest_length)
                 = _get_longest_repetition(text, occurrences, index);
 
@@ -109,7 +112,7 @@ fn compress_lz77_to_vec(text: &str) -> Vec<Node> {
 }
 
 
-// returns a vector of character indices in the "seen" string slice
+// returns a vector of relative character indices in the "seen" string slice
 fn _get_occurrences(character: &char, seen: &str) -> Vec<usize> {
     seen.chars()
         .enumerate()
@@ -168,7 +171,7 @@ fn vec_to_str(nodes: &Vec<Node>) -> String {
 // decompresses a borrow of a vector of Nodes to an owned String
 fn decompress_lz77(nodes: &Vec<Node>) -> String {
     let mut result = String::new();
-    let mut index = 0;
+    let mut index: usize = 0;
     for node in nodes {
         let piece_to_append = match *node {
             Node::Single {character} => {
@@ -176,10 +179,10 @@ fn decompress_lz77(nodes: &Vec<Node>) -> String {
                 character.to_string()
             },
             Node::Repetition {offset, length} => {
-                let start_index = index - offset;
-                let end_index = start_index + length;
-                index += length;
-                _get_utf8_slice(&result, start_index as usize, end_index as usize).to_string()
+                let start_index: usize = index - offset as usize;
+                let end_index: usize = start_index + length as usize;
+                index += length as usize;
+                _get_utf8_slice(&result, start_index, end_index).to_string()
             },
         };
         result.push_str(&piece_to_append);
