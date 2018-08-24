@@ -5,14 +5,16 @@ use std::iter::Enumerate;
 use std::str::Chars;
 use std::fmt;
 use std::vec::Vec;
+use std::mem::size_of;
+use std::u8;
 
 
 // Single element of compressed collection
 #[derive(Debug)]
 enum Node {
     Repetition {          // A piece of text already seen before.
-        offset: usize,    // How far left is the piece of text.
-        length: usize,    // How long it is.
+        offset: u8,    // How far left is the piece of text.
+        length: u8,    // How long it is.
     },
     Single {              // Just one character
         character: char,
@@ -31,15 +33,28 @@ impl fmt::Display for Node {
 
 
 fn main() {
-    let text = "🌍🌎🔧🔧🚀 😎😎 Hi` 😎😎😎 дарова дарова aoahhzaoahhzaoahhz hhzaoahhz hhzaoahhz aoahhzaoahhzaoahhz hhzaoahhz hhzaoahhz \t ";
+    let text = "qwertyuiop qwertyuiop qwertyuiop ";
 
-    let compressed = compress_lz77_to_vec(text);
-    println!("{}", vec_to_str(&compressed));
-
-    let decompressed = decompress_lz77(&compressed);
+    let ((compressed, decompressed), (size_before, size_after)) = get_results(text);
+    println!("{}", compressed);
     println!("{}", decompressed);
+    println!("{} -> {}", size_before, size_after);
 
     assert_eq!(text, &decompressed);
+}
+
+
+fn get_results(text: &str) -> ((String, String), (usize, usize)) {
+    let compressed_nodes = compress_lz77_to_vec(text);
+    let compressed_str = vec_to_str(&compressed_nodes);
+    let decompressed_str = decompress_lz77(&compressed_nodes);
+
+    let size_before = text.len();
+    let size_after = compressed_nodes.iter().map(|i| match i {
+        Node::Single {character} => character.len_utf8(),
+        Node::Repetition {offset: _, length: _} => 2 * size_of::<u8>(),
+    }).sum();
+    ((compressed_str, decompressed_str), (size_before, size_after))
 }
 
 
@@ -64,7 +79,8 @@ fn compress_lz77_to_vec(text: &str) -> Vec<Node> {
     let mut enumerator: Enumerate<Chars> = text.chars().enumerate();
 
     while let Some((index, character)) = enumerator.next() {
-        let seen = _get_utf8_slice(text, 0, index);
+        let start = if index < u8::MAX as usize {0} else {index - u8::MAX as usize};
+        let seen = _get_utf8_slice(text, start, index);
         let occurrences = _get_occurrences(&character, seen);
 
         if occurrences.is_empty() {
@@ -81,8 +97,8 @@ fn compress_lz77_to_vec(text: &str) -> Vec<Node> {
             }
             else {
                 result.push(Node::Repetition {
-                    offset: index - longest_position,
-                    length: longest_length,
+                    offset: (index - longest_position) as u8,
+                    length: longest_length as u8,
                 });
             _skip_chars(&mut enumerator, &(longest_length - 1))
             }
@@ -163,7 +179,7 @@ fn decompress_lz77(nodes: &Vec<Node>) -> String {
                 let start_index = index - offset;
                 let end_index = start_index + length;
                 index += length;
-                _get_utf8_slice(&result, start_index, end_index).to_string()
+                _get_utf8_slice(&result, start_index as usize, end_index as usize).to_string()
             },
         };
         result.push_str(&piece_to_append);
