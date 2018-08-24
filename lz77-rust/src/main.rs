@@ -31,7 +31,7 @@ impl fmt::Display for Node {
 
 
 fn main() {
-    let text = "как дела что делаешь🚀🌍🌎🌍🌎🔧🔧🚀 😎😎 Hi` मस्ते मस 😎😎😎 aoahhzaoahhzaoahhz hhzaoahhz hhzaoahhz aoahhzaoahhzaoahhz hhzaoahhz hhzaoahhz \t  मस्ते मस 😎😎";
+    let text = "🌍🌎🔧🔧🚀 😎😎 Hi` 😎😎😎 дарова дарова aoahhzaoahhzaoahhz hhzaoahhz hhzaoahhz aoahhzaoahhzaoahhz hhzaoahhz hhzaoahhz \t ";
 
     let compressed = compress_lz77_to_vec(text);
     println!("{}", vec_to_str(&compressed));

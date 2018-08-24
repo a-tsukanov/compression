@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Compression</title>
+    <style>
+        .horizontal_container {
+            display: flex;
+            border-bottom: cadetblue 1px solid;
+            padding-bottom: 30px;
+        }
+        body {
+            background-color: bisque;
+        }
+        form, .form-like {
+            width: 33%;
+            padding: 30px 30px 30px 30px;
+            box-sizing: padding-box;
+        }
+        textarea {
+            height: 200px;
+            width: 100%;
+            resize: none;
+
+        }
+        input.submit, p {
+            float: right;
+            margin-top: 30px;
+        }
+        input.choosefile {
+            margin-top: 30px;
+        }
+        select {
+            margin-right: 30px;
+        }
+        p {
+            visibility: hidden;
+        }
+        #configs_btn {
+            float: left;
+        }
+        .confborder {
+            border: blue 1px solid;
+        }
+    </style>
+</head>
+<body>
+    <div class="horizontal_container">
+        <form method="post">
+            <h3>Исходный текст</h3>
+            <textarea name="text_to_compress" placeholder="Type some text to be compressed">{{ initial_text }}</textarea>
+            <br>
+            <input class="choosefile" type="file" value="Upload from file">
+            <input class="submit" type="submit" value="Compress">
+        </form>
+        <form method="post">
+            <h3>Сжатый текст</h3>
+            <textarea name="text_to_decompress" placeholder="Type some text to be decompressed">{{ compressed_text }}</textarea>
+            <br>
+            <input class="choosefile" type="file" value="Upload from file">
+            <input class="submit" type="submit" value="Decompress">
+        </form>
+        <div class="form-like">
+            <h3>Восстановленный текст</h3>
+            <textarea name="output_text" readonly="readonly">{{ decompressed_text }}</textarea>
+            <p>Коэффициент сжатия</p>
+        </div>
+    </div>
+    <form class="configs" method="post">
+        <select name="compression_algorithm">
+            <option value="lz77">LZ77</option>
+            <option value="huffman">Huffman</option>
+        </select>
+        <br>
+        <input class="submit" type="submit" value="Обновить параметры" id="configs_btn">
+    </form>
+</body>
+</html>
