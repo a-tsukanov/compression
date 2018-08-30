@@ -1,6 +1,18 @@
 from flask import Flask, render_template, request
+import lz77_rust
 
 app = Flask(__name__)
+
+
+def get_template_params(text: str):
+    (compressed, decompressed), (size_before, size_after) = lz77_rust.get_results(text)
+    return {
+        'initial_text': text,
+        'compressed_text': compressed,
+        'decompressed_text': decompressed,
+        'size_compressed': "{} bytes".format(size_after),
+        'size_decompressed': "{} bytes".format(size_before),
+    }
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -12,12 +24,7 @@ def process_compress_request():
         print(params)
         if 'text_to_compress' in params:
             return render_template('index.html',
-                                   initial_text=params['text_to_compress'],
-                                   decompressed_text=params['text_to_compress'],)
-        elif 'text_to_decompress' in params:
-            return render_template('index.html',
-                                   compressed_text=params['text_to_decompress'],
-                                   decompressed_text='lalala',)
+                                   **get_template_params(params['text_to_compress']))
         elif 'compression_algorithm' in params:
             return render_template('index.html',
                                    decompressed_text=params['compression_algorithm'],)

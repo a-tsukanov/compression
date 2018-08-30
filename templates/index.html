@@ -33,9 +33,6 @@
         select {
             margin-right: 30px;
         }
-        p {
-            visibility: hidden;
-        }
         #configs_btn {
             float: left;
         }
@@ -53,17 +50,15 @@
             <input class="choosefile" type="file" value="Upload from file">
             <input class="submit" type="submit" value="Compress">
         </form>
-        <form method="post">
+        <div class="form-like">
             <h3>Сжатый текст</h3>
-            <textarea name="text_to_decompress" placeholder="Type some text to be decompressed">{{ compressed_text }}</textarea>
-            <br>
-            <input class="choosefile" type="file" value="Upload from file">
-            <input class="submit" type="submit" value="Decompress">
-        </form>
+            <textarea name="text_to_decompress" placeholder="Type some text to be decompressed" readonly="readonly">{{ compressed_text }}</textarea>
+            <p> {{ size_compressed }} </p>
+        </div>
         <div class="form-like">
             <h3>Восстановленный текст</h3>
             <textarea name="output_text" readonly="readonly">{{ decompressed_text }}</textarea>
-            <p>Коэффициент сжатия</p>
+            <p> {{ size_decompressed }} </p>
         </div>
     </div>
     <form class="configs" method="post">
