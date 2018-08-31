@@ -26,9 +26,6 @@ input.choosefile {
 select {
     margin-right: 30px;
 }
-#configs_btn {
-    float: left;
-}
 hr {
     margin-top: 20px;
     margin-bottom: 20px;
