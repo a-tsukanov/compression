@@ -1,6 +1,5 @@
 .horizontal_container {
     display: flex;
-    border-bottom: cadetblue 1px solid;
     padding-bottom: 30px;
 }
 body {
@@ -12,7 +11,7 @@ form, .form-like {
     box-sizing: padding-box;
 }
 textarea {
-    height: 200px;
+    height: 300px;
     width: 100%;
     resize: none;
 
@@ -29,4 +28,8 @@ select {
 }
 #configs_btn {
     float: left;
+}
+hr {
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
