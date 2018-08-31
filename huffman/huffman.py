@@ -1,5 +1,6 @@
 from itertools import groupby
 from heapq import heapify, heappop, heappush
+import math
 
 
 class Node(object):
@@ -63,4 +64,15 @@ def decompress(codes, compressed_bytes: str):
     return result
 
 
-print(decompress(*compress('random text')))
+def get_results(text):
+    codes, compressed_text = compress(text)
+    decompressed_text = decompress(codes, compressed_text)
+    return (
+               "{}\n{}".format(str(codes), compressed_text),
+               decompressed_text
+           ),\
+           (
+               len(decompressed_text.encode('utf-8')),
+               math.ceil(len(compressed_text) / 8),
+           )
+

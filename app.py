@@ -1,7 +1,14 @@
 from flask import Flask, render_template, request
 import lz77_rust
+import huffman.huffman as huffman
 
 app = Flask(__name__)
+
+
+ALGORITHMS = {
+    'lz77': lz77_rust.get_results,
+    'huffman': huffman.get_results,
+}
 
 
 def get_template_params(text, compressed, decompressed, size_before, size_after):
@@ -19,29 +26,41 @@ def write_to_file(decompressed_text, output_path):
         file.write(decompressed_text)
 
 
+def get_template_params_wrapper(func, text):
+    (compressed, decompressed), (size_before, size_after) = func(text)
+    return get_template_params(text, compressed, decompressed, size_before, size_after)
+
+
+def render_process_file(file, compression_func):
+    text = file.read().decode('utf-8-sig')
+    template_params = get_template_params_wrapper(compression_func, text)
+    write_to_file(template_params['decompressed_text'], 'output.txt')
+    return render_template('index.html', **template_params)
+
+
+def render_process_text(text, compression_func):
+    template_params = get_template_params_wrapper(compression_func, text)
+    write_to_file(template_params['decompressed_text'], 'output.txt')
+    return render_template('index.html', **template_params)
+
+
 @app.route('/', methods=['GET', 'POST'])
 def process_compress_request():
     if request.method == 'GET':
         return render_template('index.html')
+
     elif request.method == 'POST':
         params = request.form
+        print(params)
         files = request.files
+        compression_func = ALGORITHMS[params['compression_algorithm']]
+
         if 'file' in files:
-            file = files['file']
-            text = file.read().decode('utf-8-sig')
-            (compressed, decompressed), (size_before, size_after) = lz77_rust.get_results(text)
-            write_to_file(decompressed, 'output.txt')
-            return render_template('index.html',
-                                   **get_template_params(text, compressed, decompressed, size_before, size_after))
+            return render_process_file(files['file'], compression_func)
+
         elif 'text_to_compress' in params:
-            text = params['text_to_compress']
-            (compressed, decompressed), (size_before, size_after) = lz77_rust.get_results(text)
-            write_to_file(decompressed, 'output.txt')
-            return render_template('index.html',
-                                   **get_template_params(text, compressed, decompressed, size_before, size_after))
-        elif 'compression_algorithm' in params:
-            return render_template('index.html',
-                                   decompressed_text=params['compression_algorithm'],)
+            return render_process_text(params['text_to_compress'], compression_func)
+
         else:
             return "<h2>BAD REQUEST</h2>", 400
 
