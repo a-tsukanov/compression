@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <meta charset="UTF-8">
     <title>Compression</title>
     <style>
@@ -43,16 +44,16 @@
 </head>
 <body>
     <div class="horizontal_container">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data" action="#">
             <h3>Исходный текст</h3>
-            <textarea name="text_to_compress" placeholder="Type some text to be compressed">{{ initial_text }}</textarea>
+            <textarea id="text_to_compress" name="text_to_compress" placeholder="Type some text to be compressed">{{ initial_text }}</textarea>
             <br>
-            <input class="choosefile" type="file" value="Upload from file">
+            <input id="file_chooser" class="choosefile" type="file" value="Upload from file" name="file">
             <input class="submit" type="submit" value="Compress">
         </form>
         <div class="form-like">
             <h3>Сжатый текст</h3>
-            <textarea name="text_to_decompress" placeholder="Type some text to be decompressed" readonly="readonly">{{ compressed_text }}</textarea>
+            <textarea name="text_to_decompress" readonly="readonly">{{ compressed_text }}</textarea>
             <p> {{ size_compressed }} </p>
         </div>
         <div class="form-like">
@@ -69,5 +70,6 @@
         <br>
         <input class="submit" type="submit" value="Обновить параметры" id="configs_btn">
     </form>
+    <script src="../static/fileHandler.js"></script>
 </body>
 </html>
