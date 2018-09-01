@@ -19,26 +19,26 @@
             <table>
                 <tr>
                     <td class="parameter">P</td>
-                    <td><input id="p" name="p" class="parameter"></td>
+                    <td><input id="p" name="p" class="parameter">{{p}}</td>
                 </tr>
                 <tr>
                     <td class="parameter">Q</td>
-                    <td><input id="q" name="q" class="parameter"></td>
+                    <td><input id="q" name="q" class="parameter">{{q}}</td>
                 </tr>
                 <tr>
                     <td class="parameter">E</td>
-                    <td><input id="e" name="e" class="parameter"></td>
+                    <td><input id="e" name="e" class="parameter">{{e}}</td>
                 </tr>
             </table>
         </form>
         <div class="form-like">
             <h3>Зашифрованный текст</h3>
-            <textarea name="text_to_decompress" readonly="readonly">{{ compressed_text }}</textarea>
+            <textarea name="text_to_decompress" readonly="readonly">{{ encrypted_text }}</textarea>
             <p> {{ size_compressed }} </p>
         </div>
         <div class="form-like">
             <h3>Восстановленный текст</h3>
-            <textarea name="output_text" readonly="readonly">{{ decompressed_text }}</textarea>
+            <textarea name="output_text" readonly="readonly">{{ decrypted_text }}</textarea>
             <p> {{ size_decompressed }} </p>
         </div>
     </div>

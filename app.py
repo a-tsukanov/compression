@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from controllers.compression import render_compress_file, render_compress_text, ALGORITHMS
-from controllers.rsa_ import render_encrypt_file, render_encrypt_text
+from controllers.encryption import render_encrypt_file, render_encrypt_text
 
 app = Flask(__name__)
 
