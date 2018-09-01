@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from controllers.compression import render_compress_file, render_compress_text, ALGORITHMS
-from controllers.rsa import render_encrypt_file, render_encrypt_text
+from controllers.rsa_ import render_encrypt_file, render_encrypt_text
 
 app = Flask(__name__)
 
@@ -40,12 +40,13 @@ def process_rsa_request():
         params = request.form
         print(params)
         files = request.files
+        numeric_params = params['p'], params['q'], params['e']
 
         if 'file' in files:
-            return render_encrypt_file(files['file'])
+            return render_encrypt_file(files['file'], numeric_params)
 
         elif 'text_to_compress' in params:
-            return render_encrypt_text(params['text_to_compress'])
+            return render_encrypt_text(params['text_to_compress'], numeric_params)
 
         else:
             return "<h2>BAD REQUEST</h2>", 400
