@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <title>RSA</title>
+    <link rel="stylesheet" type="text/css" href="../static/rsa.css">
+</head>
+<body>
+    <div class="horizontal_container">
+        <form method="post" enctype="multipart/form-data" action="#" id="form">
+            <h3>Исходный текст</h3>
+            <textarea id="text_to_compress" name="text_to_compress" placeholder="Type some text to be encrypted">{{ initial_text }}</textarea>
+            <br>
+            <input id="file_chooser" class="choosefile" type="file" value="Upload from file" name="file">
+            <input class="submit" type="submit" value="Encrypt" id="submit">
+            <hr>
+
+            <table>
+                <tr>
+                    <td class="parameter">P</td>
+                    <td><input id="p" name="p" class="parameter"></td>
+                </tr>
+                <tr>
+                    <td class="parameter">Q</td>
+                    <td><input id="q" name="q" class="parameter"></td>
+                </tr>
+                <tr>
+                    <td class="parameter">E</td>
+                    <td><input id="e" name="e" class="parameter"></td>
+                </tr>
+            </table>
+        </form>
+        <div class="form-like">
+            <h3>Зашифрованный текст</h3>
+            <textarea name="text_to_decompress" readonly="readonly">{{ compressed_text }}</textarea>
+            <p> {{ size_compressed }} </p>
+        </div>
+        <div class="form-like">
+            <h3>Восстановленный текст</h3>
+            <textarea name="output_text" readonly="readonly">{{ decompressed_text }}</textarea>
+            <p> {{ size_decompressed }} </p>
+        </div>
+    </div>
+    <script src="../static/fileHandler.js"></script>
+    <script src="../static/validate.js"></script>
+</body>
+</html>

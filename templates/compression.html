@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Compression</title>
+    <link rel="stylesheet" type="text/css" href="../static/compression.css">
+</head>
+<body>
+    <div class="horizontal_container">
+        <form method="post" enctype="multipart/form-data" action="#">
+            <h3>Исходный текст</h3>
+            <textarea id="text_to_compress" name="text_to_compress" placeholder="Type some text to be compressed">{{ initial_text }}</textarea>
+            <br>
+            <input id="file_chooser" class="choosefile" type="file" value="Upload from file" name="file">
+            <input class="submit" type="submit" value="Compress">
+            <hr>
+            <select name="compression_algorithm">
+                <option value="lz77">LZ77</option>
+                <option value="huffman">Huffman</option>
+            </select>
+        </form>
+        <div class="form-like">
+            <h3>Сжатый текст</h3>
+            <textarea name="text_to_decompress" readonly="readonly">{{ compressed_text }}</textarea>
+            <p> {{ size_compressed }} </p>
+        </div>
+        <div class="form-like">
+            <h3>Восстановленный текст</h3>
+            <textarea name="output_text" readonly="readonly">{{ decompressed_text }}</textarea>
+            <p> {{ size_decompressed }} </p>
+        </div>
+    </div>
+    <script src="../static/fileHandler.js"></script>
+</body>
+</html>

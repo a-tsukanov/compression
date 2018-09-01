@@ -1,0 +1,45 @@
+.horizontal_container {
+    display: flex;
+    padding-bottom: 30px;
+}
+.horizontal_container_parameter {
+    display: flex;
+    height: 30px;
+}
+body {
+    background-color: #a5cbcb;
+}
+form, .form-like {
+    width: 33%;
+    padding: 30px 30px 30px 30px;
+    box-sizing: padding-box;
+}
+textarea {
+    height: 300px;
+    width: 100%;
+    resize: none;
+
+}
+input.submit, p {
+    float: right;
+    margin-top: 30px;
+}
+input.choosefile {
+    margin-top: 30px;
+}
+input.parameter {
+    height: auto;
+}
+select {
+    margin-right: 30px;
+}
+hr {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+p {
+    font-size: large;
+}
+td.parameter {
+    padding-right: 15px;
+}

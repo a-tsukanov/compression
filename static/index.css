@@ -1,35 +1,15 @@
-.horizontal_container {
-    display: flex;
-    padding-bottom: 30px;
-}
 body {
-    background-color: bisque;
+    background-image: url("../static/background.jpg"), url("../static/paper-background.jpg");
+    background-blend-mode: soft-light;
 }
-form, .form-like {
-    width: 33%;
-    padding: 30px 30px 30px 30px;
-    box-sizing: padding-box;
+cite {
+    text-align: center;
 }
-textarea {
-    height: 300px;
+a {
+    font-size: x-large;
+}
+div {
     width: 100%;
-    resize: none;
-
-}
-input.submit, p {
-    float: right;
-    margin-top: 30px;
-}
-input.choosefile {
-    margin-top: 30px;
-}
-select {
-    margin-right: 30px;
-}
-hr {
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-p {
-    font-size: large;
+    background-color: rgba(255, 255, 255, 0.4);
+    padding: 15px;
 }
