@@ -52,5 +52,14 @@ def process_rsa_request():
             return "<h2>BAD REQUEST</h2>", 400
 
 
+@app.route('/zero_knowledge_proof/', methods=['GET', 'POST'])
+def process_fiat_shamir_request():
+    if request.method == 'GET':
+        return render_template('fiat_shamir.html')
+
+    elif request.method == 'POST':
+        raise NotImplementedError
+
+
 if __name__ == '__main__':
     app.run()

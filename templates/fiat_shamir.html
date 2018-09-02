@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Доказательство с нулевым знанием</title>
+    <link rel="stylesheet" type="text/css" href="../static/stylesheets/fiat_shamir.css">
+</head>
+<body>
+    <div class="horizontal_container">
+        <form method="post" id="form">
+            <table>
+                <tr>
+                    <td class="parameter">Секрет S</td>
+                    <td><input id="s" name="s" class="parameter" value="{{s}}"></td>
+                </tr>
+                <tr>
+                    <td class="gap"></td>
+                </tr>
+                <tr>
+                    <td class="parameter">P</td>
+                    <td><input id="p" name="p" class="parameter" value="{{p}}"></td>
+                </tr>
+                <tr>
+                    <td class="parameter">Q</td>
+                    <td><input id="q" name="q" class="parameter" value="{{q}}"></td>
+                </tr>
+                <tr>
+                    <td class="gap"></td>
+                </tr>
+                <tr>
+                    <td class="parameter">Число аккредитаций t</td>
+                    <td><input id="t" name="t" class="parameter" value="{{t}}"></td>
+                </tr>
+
+            </table>
+            <hr>
+            <input class="submit" type="submit" value="Verify" id="submit">
+        </form>
+
+        <div class="output">
+            <textarea name="output_text" readonly="readonly">{{ output }}</textarea>
+        </div>
+    </div>
+
+    <script src="../static/js/validate_fiat.js"></script>
+</body>
+</html>

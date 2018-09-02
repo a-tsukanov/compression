@@ -4,7 +4,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <meta charset="UTF-8">
     <title>RSA</title>
-    <link rel="stylesheet" type="text/css" href="../static/rsa.css">
+    <link rel="stylesheet" type="text/css" href="../static/stylesheets/rsa.css">
 </head>
 <body>
     <div class="horizontal_container">
@@ -19,15 +19,15 @@
             <table>
                 <tr>
                     <td class="parameter">P</td>
-                    <td><input id="p" name="p" class="parameter">{{p}}</td>
+                    <td><input id="p" name="p" class="parameter" value="{{p}}"></td>
                 </tr>
                 <tr>
                     <td class="parameter">Q</td>
-                    <td><input id="q" name="q" class="parameter">{{q}}</td>
+                    <td><input id="q" name="q" class="parameter" value="{{q}}"></td>
                 </tr>
                 <tr>
                     <td class="parameter">E</td>
-                    <td><input id="e" name="e" class="parameter">{{e}}</td>
+                    <td><input id="e" name="e" class="parameter" value="{{e}}"></td>
                 </tr>
             </table>
         </form>
@@ -42,7 +42,7 @@
             <p> {{ size_decompressed }} </p>
         </div>
     </div>
-    <script src="../static/fileHandler.js"></script>
-    <script src="../static/validate.js"></script>
+    <script src="../static/js/fileHandler.js"></script>
+    <script src="../static/js/validate_rsa.js"></script>
 </body>
 </html>

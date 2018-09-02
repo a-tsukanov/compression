@@ -20,7 +20,7 @@ def get_verification_metrics(n, r, s, v, x):
     return y2, xv, e
 
 
-def verify(n, r, s, v, x):
+def verify(n, r, s, v, x) -> bool:
     y2, xv, e = get_verification_metrics(n, r, s, v, x)
     if e == 0:
         return y2 == x

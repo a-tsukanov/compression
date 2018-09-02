@@ -1,5 +1,5 @@
 body {
-    background-image: url("../static/background.jpg"), url("../static/paper-background.jpg");
+    background-image: url("../images/background.jpg"), url("../images/paper-background.jpg");
     background-blend-mode: soft-light;
 }
 cite {
