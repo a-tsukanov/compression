@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from controllers.compression import render_compress_file, render_compress_text, ALGORITHMS
 from controllers.encryption import render_encrypt_file, render_encrypt_text
+from controllers.zero_knowledge import render_proove
 
 app = Flask(__name__)
 
@@ -58,7 +59,9 @@ def process_fiat_shamir_request():
         return render_template('fiat_shamir.html')
 
     elif request.method == 'POST':
-        raise NotImplementedError
+        params = request.form
+        secret, p, q, n_accreditations = (int(params[k]) for k in ('s', 'p', 'q', 't'))
+        return render_proove(secret, p, q, n_accreditations)
 
 
 if __name__ == '__main__':

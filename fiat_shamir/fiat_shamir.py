@@ -57,7 +57,7 @@ class Verifier:
             x = new_x
 
         if x == verifier_result:
-            log('Verifier:\tx is also {}'.format(x))
+            log('Verifier:\tboth numbers are {}'.format(x))
             log('Verifier:\tverification OK')
         return x == verifier_result
 
@@ -89,7 +89,7 @@ def close_logger(logfile):
     logfile.close()
 
 
-def main(p, q, secret, n_accreditations):
+def verify_and_write_log(p, q, secret, n_accreditations):
     f = init_logger()
     try:
         verifier = Verifier(p, q)
@@ -97,8 +97,4 @@ def main(p, q, secret, n_accreditations):
         verify(verifier, sender, n_accreditations)
     finally:
         close_logger(f)
-
-
-if __name__ == '__main__':
-    main(11, 19, 43, 10)
 
